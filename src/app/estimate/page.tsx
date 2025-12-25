@@ -7,6 +7,7 @@ export default function EstimatePage() {
 const [eventType, setEventType] = useState("Conference");
 const [audienceSize, setAudienceSize] = useState("101–300");
 const [duration, setDuration] = useState("Full day");
+const [drivers, setDrivers] = useState<string[]>([]);
 
 
   return (
@@ -74,6 +75,8 @@ const [duration, setDuration] = useState("Full day");
             });
 
             const data = await res.json();
+setDrivers(data.drivers ?? []);
+
             setRange(
               `$${data.rangeLow.toLocaleString()} – $${data.rangeHigh.toLocaleString()}`
             );
@@ -87,6 +90,17 @@ const [duration, setDuration] = useState("Full day");
         <h2 className="text-xl font-semibold">Estimated range</h2>
         {range && <p className="mt-2 font-semibold text-lg">{range}</p>}
       </section>
+{drivers.length > 0 && (
+  <div className="mt-4">
+    <h3 className="font-semibold">What&#39;s driving the cost</h3>
+    <ul className="list-disc pl-5 text-gray-700">
+      {drivers.map((d) => (
+        <li key={d}>{d}</li>
+      ))}
+    </ul>
+  </div>
+)}
+
     </main>
   );
 }
