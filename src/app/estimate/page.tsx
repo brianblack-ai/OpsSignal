@@ -63,27 +63,26 @@ const [drivers, setDrivers] = useState<string[]>([]);
 
         </div>
 
-       <button
-          type="button"
-          className="mt-4 inline-flex items-center rounded bg-black text-white px-4 py-2"
-          onClick={async () => {
-            setRange("Calculating...");
-            const res = await fetch("/api/estimate", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ eventType, audienceSize, duration }),
-            });
+ <button
+  type="button"
+  className="mt-4 inline-flex items-center rounded bg-black text-white px-4 py-2"
+  onClick={async () => {
+    setRange("Calculating...");
+    const res = await fetch("/api/estimate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventType, audienceSize, duration }),
+    });
 
-            const data = await res.json();
-setDrivers(data.drivers ?? []);
+    const data = await res.json();
+    setDrivers(data.drivers ?? []);
 
-            setRange(
-              `$${data.rangeLow.toLocaleString()} – $${data.rangeHigh.toLocaleString()}`
-            );
-          }}
-        >
-          Calculate range
-        </button>
+setRange(`$${data.rangeLow.toLocaleString()} - $${data.rangeHigh.toLocaleString()}`);
+  }}
+>
+  Calculate range
+</button>
+
       </form>
 
       <section className="mt-10 max-w-xl">
@@ -91,16 +90,15 @@ setDrivers(data.drivers ?? []);
         {range && <p className="mt-2 font-semibold text-lg">{range}</p>}
       </section>
 {drivers.length > 0 && (
-  <div className="mt-4">
+  <section className="mt-6 max-w-xl">
     <h3 className="font-semibold">What&#39;s driving the cost</h3>
     <ul className="list-disc pl-5 text-gray-700">
       {drivers.map((d) => (
         <li key={d}>{d}</li>
       ))}
     </ul>
-  </div>
+  </section>
 )}
-
     </main>
   );
 }
