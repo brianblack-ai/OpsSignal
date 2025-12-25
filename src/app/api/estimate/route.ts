@@ -64,12 +64,22 @@ export async function POST(req: Request) {
   const rangeLow = Math.round((baseLow * mult) / 100) * 100;
   const rangeHigh = Math.round((baseHigh * mult) / 100) * 100;
 
+const drivers: string[] = [];
+
+if (duration === "2 days" || duration === "3+ days") drivers.push("Multi-day labor + rehearsals");
+if (audienceSize === "301–800" || audienceSize === "800+") drivers.push("More coverage + more audio reinforcement");
+if (eventType === "Gala") drivers.push("Higher production polish (lighting + scenic expectations)");
+if (audienceSize === "0–100" && duration === "Half-day") drivers.push("Lean setup, minimal crew");
+
+if (drivers.length === 0) drivers.push("Baseline production needs");
+
   return NextResponse.json({
     ok: true,
     rangeLow,
     rangeHigh,
     currency: "USD",
-    inputs: { eventType, audienceSize, duration },
+    drivers,
+inputs: { eventType, audienceSize, duration },
     mult,
     notes: ["v0 dynamic estimate: input-aware stub"],
   });
