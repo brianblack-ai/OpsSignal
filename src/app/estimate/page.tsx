@@ -8,6 +8,8 @@ const [eventType, setEventType] = useState("Conference");
 const [audienceSize, setAudienceSize] = useState("101–300");
 const [duration, setDuration] = useState("Full day");
 const [drivers, setDrivers] = useState<string[]>([]);
+const [email, setEmail] = useState("");
+const [leadStatus, setLeadStatus] = useState<string | null>(null);
 
 
   return (
@@ -90,15 +92,62 @@ setRange(`$${data.rangeLow.toLocaleString()} - $${data.rangeHigh.toLocaleString(
         {range && <p className="mt-2 font-semibold text-lg">{range}</p>}
       </section>
 {drivers.length > 0 && (
-  <section className="mt-6 max-w-xl">
-    <h3 className="font-semibold">What&#39;s driving the cost</h3>
-    <ul className="list-disc pl-5 text-gray-700">
-      {drivers.map((d) => (
-        <li key={d}>{d}</li>
-      ))}
-    </ul>
-  </section>
+  <>
+    <section className="mt-6 max-w-xl">
+      <h3 className="font-semibold">What's driving the cost</h3>
+      <ul className="list-disc pl-5 text-gray-700">
+        {drivers.map((d) => (
+          <li key={d}>{d}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section className="mt-10 max-w-xl border-t pt-6">
+      <h3 className="text-lg font-semibold">Want a copy of this estimate?</h3>
+      <p className="mt-2 text-gray-600">
+        Drop your email and I’ll send the range and the key cost drivers.
+        This does not gate the demo.
+      </p>
+
+      <div className="mt-4 flex gap-2">
+        <input
+          type="email"
+          placeholder="you@company.com"
+          className="w-full border rounded p-2"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <button
+          type="button"
+          className="inline-flex items-center rounded bg-black text-white px-4 py-2"
+          onClick={async () => {
+            setLeadStatus("Sending...");
+            await fetch("/api/lead", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email,
+                estimate: range,
+                drivers,
+                source: "estimate",
+              }),
+            });
+            setLeadStatus("Sent.");
+          }}
+        >
+          Email me
+        </button>
+      </div>
+
+      {leadStatus && (
+        <p className="mt-2 text-sm text-gray-500">{leadStatus}</p>
+      )}
+    </section>
+  </>
 )}
+
+
     </main>
   );
 }
